@@ -6,3 +6,5 @@ __pycache__/
 *.pth
 streetview_dataset.zip
 .DS_Store
+*.err
+*.out
