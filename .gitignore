@@ -1,2 +1,7 @@
 .venv
 logs
+streetview_dataset/
+wandb/
+__pycache__/
+*.pth
+streetview*

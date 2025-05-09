@@ -8,7 +8,7 @@ import wandb
 # Hyperparameters
 NUM_EPOCHS = 10
 LEARNING_RATE = 0.001
-DATA_DIR = 'data'
+DATA_DIR = 'streetview_dataset'
 MODEL_SAVE_PATH = 'cnn_geoguesser_model.pth'
 
 wandb.init(project="cnn-geoguesser", config={
@@ -114,7 +114,7 @@ for epoch in range(config.epochs):
     # Save the best model
     if epoch_val_acc > best_val_accuracy:
         best_val_accuracy = epoch_val_acc
-        torch.save(model, MODEL_SAVE_PATH)
+        torch.save(model.state_dict(), MODEL_SAVE_PATH)
         print(f"New best model saved with accuracy: {best_val_accuracy:.2f}%")
 
 print('Finished Training')

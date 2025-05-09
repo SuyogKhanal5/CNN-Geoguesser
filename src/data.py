@@ -20,7 +20,7 @@ def load_from_folder(fname):
     train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
 
     # Create data loaders
-    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=64, shuffle=False)
 
     return train_loader, val_loader, class_to_idx
