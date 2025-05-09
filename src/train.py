@@ -10,6 +10,7 @@ NUM_EPOCHS = 10
 LEARNING_RATE = 0.001
 DATA_DIR = 'streetview_dataset'
 MODEL_SAVE_PATH = 'cnn_geoguesser_model.pth'
+L2_WEIGHT_DECAY = 0.0001
 
 wandb.init(project="cnn-geoguesser", config={
     "learning_rate": LEARNING_RATE,
@@ -18,7 +19,8 @@ wandb.init(project="cnn-geoguesser", config={
     "architecture": "CNNModel",
     "dataset": "CustomGeoImages",
     "step_size": 5,
-    "gamma": 0.1
+    "gamma": 0.1,
+    "weight_decay": L2_WEIGHT_DECAY
 })
 config = wandb.config
 
@@ -36,7 +38,7 @@ print(f"Found {num_classes} classes: {class_to_idx}")
 print("Initializing model...")
 model = CNNModel(num_classes=num_classes).to(device)
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=config.learning_rate)
+optimizer = optim.Adam(model.parameters(), lr=config.learning_rate, weight_decay=config.weight_decay)
 scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=config.step_size, gamma=config.gamma)
 
 # Watch the model with wandb
