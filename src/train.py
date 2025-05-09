@@ -114,7 +114,7 @@ for epoch in range(config.epochs):
     # Save the best model
     if epoch_val_acc > best_val_accuracy:
         best_val_accuracy = epoch_val_acc
-        torch.save(model.state_dict(), MODEL_SAVE_PATH)
+        torch.save(model, MODEL_SAVE_PATH)
         print(f"New best model saved with accuracy: {best_val_accuracy:.2f}%")
 
 print('Finished Training')

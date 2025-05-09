@@ -7,9 +7,9 @@ import geopandas as gpd
 import csv
 
 # Your API Key here
-API_KEY = "API-KEY"
+API_KEY = "API_KEY"
 
-NUM_IMAGES = 100
+NUM_IMAGES = 800
 MAX_ATTEMPTS = 100000
 
 
@@ -66,6 +66,10 @@ for COUNTRY_NAME in countries:
     # ✅ Count existing images
     existing_images = [f for f in os.listdir(OUT_FOLDER) if f.endswith(".jpg")]
     start_index = len(existing_images)
+    
+    if start_index >= NUM_IMAGES:
+        print(f"✅ Completed: {start_index} images already exist in {OUT_FOLDER}")
+        continue
 
     # ✅ Load previous metadata file if exists
     metadata_path = os.path.join(OUT_FOLDER, "metadata.csv")
@@ -78,7 +82,7 @@ for COUNTRY_NAME in countries:
     print(f"Getting street view images from ", COUNTRY_NAME, ":")
     image_count = 0
 
-    while image_count < NUM_IMAGES:
+    while start_index + image_count < NUM_IMAGES:
         candidate = generate_candidate_points(geometry, 1)
 
         for lat, lon in candidate:
