@@ -16,7 +16,9 @@ wandb.init(project="cnn-geoguesser", config={
     "epochs": NUM_EPOCHS,
     "batch_size": 32, # Assuming batch_size is 32 from DataLoader
     "architecture": "CNNModel",
-    "dataset": "CustomGeoImages"
+    "dataset": "CustomGeoImages",
+    "step_size": 5,
+    "gamma": 0.1
 })
 config = wandb.config
 
@@ -35,6 +37,7 @@ print("Initializing model...")
 model = CNNModel(num_classes=num_classes).to(device)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=config.learning_rate)
+scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=config.step_size, gamma=config.gamma)
 
 # Watch the model with wandb
 wandb.watch(model, log="all")
@@ -116,6 +119,11 @@ for epoch in range(config.epochs):
         best_val_accuracy = epoch_val_acc
         torch.save(model.state_dict(), MODEL_SAVE_PATH)
         print(f"New best model saved with accuracy: {best_val_accuracy:.2f}%")
+    # Step the LR scheduler
+    scheduler.step()
+    # Log the updated learning rate
+    current_lr = scheduler.get_last_lr()[0]
+    wandb.log({"learning_rate": current_lr})
 
 print('Finished Training')
 # Finish the wandb run
