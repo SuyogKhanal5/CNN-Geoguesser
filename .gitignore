@@ -4,5 +4,5 @@ streetview_dataset/
 wandb/
 __pycache__/
 *.pth
-streetview*
+streetview_dataset.zip
 .DS_Store
