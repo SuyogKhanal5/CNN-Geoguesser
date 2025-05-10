@@ -4,7 +4,7 @@ import torch.optim as optim
 import data as data
 from model import CNNModel
 import wandb
-from src.config import HYPERPARAMETERS
+from config import HYPERPARAMETERS
 
 NUM_EPOCHS = HYPERPARAMETERS["NUM_EPOCHS"]
 LEARNING_RATE = HYPERPARAMETERS["LEARNING_RATE"]
