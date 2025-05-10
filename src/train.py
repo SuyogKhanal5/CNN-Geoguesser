@@ -39,7 +39,7 @@ print(f"Found {num_classes} classes: {class_to_idx}")
 print("Initializing model...")
 model = CNNModel(num_classes=num_classes).to(device)
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE, weight_decay=L2_WEIGHT_DECAY)
+optimizer = optim.AdamW(model.parameters(), lr=LEARNING_RATE, weight_decay=L2_WEIGHT_DECAY)
 scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=STEP_SIZE, gamma=GAMMA)
 
 # Watch the model with wandb
