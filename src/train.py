@@ -4,25 +4,26 @@ import torch.optim as optim
 import data as data
 from model import CNNModel
 import wandb
+from src.config import HYPERPARAMETERS
 
-# Hyperparameters
-NUM_EPOCHS = 10
-LEARNING_RATE = 0.001
-DATA_DIR = 'streetview_dataset'
-MODEL_SAVE_PATH = 'cnn_geoguesser_model.pth'
-L2_WEIGHT_DECAY = 0.0001
+NUM_EPOCHS = HYPERPARAMETERS["NUM_EPOCHS"]
+LEARNING_RATE = HYPERPARAMETERS["LEARNING_RATE"]
+DATA_DIR = HYPERPARAMETERS["DATA_DIR"]
+MODEL_SAVE_PATH = HYPERPARAMETERS["MODEL_SAVE_PATH"]
+L2_WEIGHT_DECAY = HYPERPARAMETERS["L2_WEIGHT_DECAY"]
+STEP_SIZE = HYPERPARAMETERS["STEP_SIZE"]
+GAMMA = HYPERPARAMETERS["GAMMA"]
+
 
 wandb.init(project="cnn-geoguesser", config={
     "learning_rate": LEARNING_RATE,
     "epochs": NUM_EPOCHS,
-    "batch_size": 32, # Assuming batch_size is 32 from DataLoader
-    "architecture": "CNNModel",
-    "dataset": "CustomGeoImages",
-    "step_size": 5,
-    "gamma": 0.1,
+    "architecture": "CNN",
+    "dataset": "streetview_dataset",
+    "step_size": STEP_SIZE,
+    "gamma": GAMMA,
     "weight_decay": L2_WEIGHT_DECAY
 })
-config = wandb.config
 
 # Setup device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -38,8 +39,8 @@ print(f"Found {num_classes} classes: {class_to_idx}")
 print("Initializing model...")
 model = CNNModel(num_classes=num_classes).to(device)
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=config.learning_rate, weight_decay=config.weight_decay)
-scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=config.step_size, gamma=config.gamma)
+optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE, weight_decay=L2_WEIGHT_DECAY)
+scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=STEP_SIZE, gamma=GAMMA)
 
 # Watch the model with wandb
 wandb.watch(model, log="all")
@@ -47,7 +48,7 @@ wandb.watch(model, log="all")
 print("Starting training...")
 best_val_accuracy = 0.0
 
-for epoch in range(config.epochs):
+for epoch in range(NUM_EPOCHS):
     # --- Training Phase ---
     model.train()
     running_loss = 0.0
@@ -78,7 +79,7 @@ for epoch in range(config.epochs):
         wandb.log({"batch_loss": loss.item()})
 
         if (i + 1) % 10 == 0: # Print every 10 batches
-                print(f'Epoch [{epoch+1}/{config.epochs}], Step [{i+1}/{len(train_loader)}], Loss: {loss.item():.4f}')
+            print(f'Epoch [{epoch+1}/{NUM_EPOCHS}], Step [{i+1}/{len(train_loader)}], Loss: {loss.item():.4f}')
 
     epoch_train_loss = running_loss / len(train_loader.dataset)
     epoch_train_acc = 100 * train_correct / train_total
