@@ -12,7 +12,7 @@ def load_from_folder(fname):
 
     # Define the final transformation with calculated normalization
     transform = transforms.Compose([
-        transforms.Resize((256, 256)),
+        transforms.Resize((640, 640)),
         transforms.ToTensor(),
         transforms.Normalize(mean=mean, std=std)
     ])
